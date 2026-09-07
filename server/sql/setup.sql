@@ -223,7 +223,7 @@ VALUES
     'Food',
     3500,
     15,
-    'https://images.unsplash.com/photo-1544025162-d76694265947',
+    '/menu-images/beef-suya-skewers.jpg',
     TRUE,
     1
 ),
@@ -233,7 +233,7 @@ VALUES
     'Drink',
     1000,
     5,
-    'https://images.unsplash.com/photo-1544145945-f90425340c7e',
+    '/menu-images/chilled-zobo.jpg',
     TRUE,
     1
 ),
@@ -243,7 +243,7 @@ VALUES
     'Food',
     5500,
     30,
-    'https://images.unsplash.com/photo-1515003197210-e0cd71810b5f',
+    '/menu-images/egusi-pounded-yam.jpg',
     TRUE,
     1
 ),
@@ -253,7 +253,7 @@ VALUES
     'Food',
     4200,
     25,
-    'https://images.unsplash.com/photo-1603133872878-684f208fb84b',
+    '/menu-images/jollof-rice-chicken.webp',
     TRUE,
     1
 ),
@@ -263,7 +263,7 @@ VALUES
     'Food',
     6500,
     20,
-    'https://images.unsplash.com/photo-1551183053-bf91a1d81141',
+    '/menu-images/creamy-carbonara.jpg',
     FALSE,
     1
 ),
@@ -273,7 +273,7 @@ VALUES
     'Drink',
     2000,
     7,
-    'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd',
+    '/menu-images/classic-chapman.jpg',
     FALSE,
     1
 ),
@@ -283,7 +283,7 @@ VALUES
     'Food',
     9200,
     28,
-    'https://images.unsplash.com/photo-1547592180-85f173990554',
+    '/menu-images/seafood-platter.jpg',
     FALSE,
     1
 ),
@@ -293,7 +293,7 @@ VALUES
     'Drink',
     3600,
     8,
-    'https://images.unsplash.com/photo-1551024506-0bccd828d307',
+    '/menu-images/house-cocktail.jpg',
     TRUE,
     1
 ),
@@ -303,7 +303,7 @@ VALUES
     'Food',
     4000,
     25,
-    'https://images.unsplash.com/photo-1504674900247-0877df9cc836',
+    '/menu-images/amala-ewedu.jpg',
     FALSE,
     1
 );
