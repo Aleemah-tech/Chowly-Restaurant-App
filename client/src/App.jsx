@@ -1361,20 +1361,9 @@ const displayStatus = isCompleted
             <div>
               <small>PRETEND PAYMENT</small>
               <h4>{paymentMethod}</h4>
-            <div className="demo-payment-heading">
-  <div>
-    <small>PRETEND PAYMENT</small>
-    <h4>{paymentMethod}</h4>
-  </div>
-</div>
+            </div>
 
-<div className="payment-warning">
-  This is a PRETEND PAYMENT for demonstration purposes only.
-  No real money will be charged or transferred.
-</div>
-
-<button
-  className="close-payment"
+            <button
               className="close-payment"
               onClick={() =>
                 setShowPaymentPanel(false)
@@ -1385,7 +1374,7 @@ const displayStatus = isCompleted
           </div>
 
           <div className="demo-warning">
-            Demo only — no real money will be charged.
+            This is a PRETEND PAYMENT for demonstration purposes only. No real money will be charged or transferred.
           </div>
 
           {paymentMethod === "Card" && (
@@ -1478,7 +1467,7 @@ const displayStatus = isCompleted
                   setShowPaymentPanel(false);
                 }}
               >
-                Confirm Pretend Bank Transfer
+                I Have Made the Pretend Transfer
               </button>
             </div>
           )}
@@ -1508,7 +1497,7 @@ const displayStatus = isCompleted
                   setShowPaymentPanel(false);
                 }}
               >
-                Complete Pretend USSD Payment
+                I Have Completed the Pretend USSD Payment
               </button>
             </div>
           )}
