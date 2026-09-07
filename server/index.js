@@ -584,8 +584,8 @@ app.post("/api/orders/:id/payment", async (req, res) => {
       UPDATE orders
 
       SET
-        paid = TRUE,
-        status = 'Paid'
+        paid = TRUE
+      
 
       WHERE id = $1
     `, [orderId]);

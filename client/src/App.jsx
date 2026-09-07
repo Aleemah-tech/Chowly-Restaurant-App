@@ -32,6 +32,41 @@ export default function App() {
 
   const [loading, setLoading] = useState(true);
 
+  const [selectedRestaurant, setSelectedRestaurant] = useState("bamboo");
+
+const restaurants = [
+  {
+    id: "bamboo",
+    name: "Bamboo Lounge",
+    address: "19 Ikotun Road, Lagos",
+  },
+  {
+    id: "rubels",
+    name: "Rubels & Angels",
+    address: "12 Iganmu Road, Lagos",
+  },
+  {
+    id: "ego",
+    name: "Ego's Kitchen",
+    address: "56 Isolo Way, Lagos",
+  },
+  {
+    id: "theplace",
+    name: "ThePlace",
+    address: "13 Apapa Road, Lagos",
+  },
+  {
+    id: "chicken",
+    name: "Chicken Republic",
+    address: "99 Airport Road, Lagos",
+  },
+];
+
+const currentRestaurant = restaurants.find(
+  (restaurant) => restaurant.id === selectedRestaurant
+);
+const restaurantIsActive = selectedRestaurant === "bamboo";
+
   useEffect(() => {
     loadInitialData();
   }, []);
@@ -308,7 +343,7 @@ export default function App() {
     await loadOrders();
   }
 
-  async function payForOrder(orderId) {
+  async function payForOrder(orderId, paymentMethod) {
     const confirmed = window.confirm(
       "This is a payment for demonstration only. No real money will be charged.\n\nContinue?"
     );
@@ -324,9 +359,9 @@ export default function App() {
           "Content-Type": "application/json",
         },
 
-        body: JSON.stringify({
-          paymentMethod: "Card",
-        }),
+       body: JSON.stringify({
+  paymentMethod: "Card",
+}),
       }
     );
 
@@ -401,10 +436,11 @@ export default function App() {
           )}
 
           <div className="nav-actions">
+            {selectedRestaurant === "bamboo" && (
             <span className="table">
               ⌖ Table 7
             </span>
-
+)}
             <div className="role-switch">
               <button
                 className={
@@ -460,6 +496,46 @@ export default function App() {
 
               <section className="hero-row">
                 <div>
+     <div className="restaurant-selector">
+  <div className="restaurant-selector-icon">
+    🍽️
+  </div>
+
+  <div className="restaurant-selector-content">
+    <span className="restaurant-label">
+      YOU'RE DINING AT
+    </span>
+
+    <select
+      className="restaurant-dropdown"
+      value={selectedRestaurant}
+      onChange={(event) =>
+        setSelectedRestaurant(event.target.value)
+      }
+    >
+      {restaurants.map((restaurant) => (
+        <option
+          key={restaurant.id}
+          value={restaurant.id}
+        >
+          {restaurant.name} — {restaurant.address}
+        </option>
+      ))}
+    </select>
+
+    {selectedRestaurant === "bamboo" ? (
+      <p className="restaurant-status active">
+        ● Bamboo Lounge is active today
+      </p>
+    ) : (
+      <p className="restaurant-status inactive">
+        {currentRestaurant?.name} is not active today 😊
+      </p>
+    )}
+  </div>
+</div>
+
+
                   <h1>
                     What are you in the mood for?
                   </h1>
@@ -470,7 +546,7 @@ export default function App() {
                     straight from your table.
                   </p>
                 </div>
-
+{selectedRestaurant === "bamboo" && (
                 <div className="dining-card">
                   <span>🍴</span>
 
@@ -479,8 +555,32 @@ export default function App() {
                     <strong>Table 7</strong>
                   </div>
                 </div>
+                )}
               </section>
+{!restaurantIsActive ? (
+  <div className="restaurant-unavailable">
+    <div className="restaurant-unavailable-icon">
+      😊
+    </div>
 
+    <h2>
+      {currentRestaurant?.name} is not accepting orders today
+    </h2>
+
+    <p>
+      Please choose another restaurant to continue ordering on Chowly.
+    </p>
+
+    <button
+      onClick={() =>
+        setSelectedRestaurant("bamboo")
+      }
+    >
+      View Bamboo Lounge
+    </button>
+  </div>
+) : (
+  <>
               <section className="search-panel">
                 <div className="search-box">
                   🔍
@@ -518,6 +618,64 @@ export default function App() {
                   )}
                 </div>
               </section>
+              <section className="food-hero">
+  <div className="food-hero-content">
+    <span>CHEF'S PICK</span>
+
+    <h2>Big flavour. Straight to your table.</h2>
+
+    <p>
+      Discover customer favourites prepared fresh
+      by the Chowly kitchen.
+    </p>
+
+    <button onClick={() => setFilter("Food")}>
+      Explore food
+    </button>
+  </div>
+
+  <div className="food-hero-image">
+    <img
+      src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1000&q=90"
+      alt="Selection of delicious food"
+    />
+  </div>
+</section>
+<section className="category-row">
+
+  <button onClick={() => setFilter("All")}>
+    <img
+      src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=300&q=80"
+      alt=""
+    />
+    <span>All</span>
+  </button>
+
+  <button onClick={() => setFilter("Food")}>
+    <img
+      src="https://images.unsplash.com/photo-1603133872878-684f208fb84b?auto=format&fit=crop&w=300&q=80"
+      alt=""
+    />
+    <span>Mains</span>
+  </button>
+
+  <button onClick={() => setFilter("Drink")}>
+    <img
+      src="https://images.unsplash.com/photo-1544145945-f90425340c7e?auto=format&fit=crop&w=300&q=80"
+      alt=""
+    />
+    <span>Drinks</span>
+  </button>
+
+  <button onClick={() => setSearch("suya")}>
+    <img
+      src="https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=300&q=80"
+      alt=""
+    />
+    <span>Grills</span>
+  </button>
+
+</section>
 
               {popularItems.length > 0 && (
                 <MenuSection
@@ -538,6 +696,8 @@ export default function App() {
                 addToCart={addToCart}
                 money={money}
               />
+              </>
+)}
             </main>
 
             <Footer />
@@ -601,12 +761,14 @@ export default function App() {
             <StatCard
               label="Open Orders"
               value={
-                orders.filter(
-                  (order) =>
-                    !order.paid &&
-                    order.status !== "Served"
-                ).length
-              }
+  orders.filter(
+    (order) =>
+      !(
+        order.paid &&
+        order.status === "Served"
+      )
+  ).length
+}
             />
 
             <StatCard
@@ -620,15 +782,15 @@ export default function App() {
             />
 
             <StatCard
-              label="Served"
-              value={
-                orders.filter(
-                  (order) =>
-                    order.status === "Served" ||
-                    order.paid
-                ).length
-              }
-            />
+  label="Completed"
+  value={
+    orders.filter(
+      (order) =>
+        order.paid &&
+        order.status === "Served"
+    ).length
+  }
+/>
           </div>
 
           <div className="orders-list">
@@ -894,30 +1056,40 @@ function CustomerOrder({
   submitRating,
   payForOrder,
 }) {
-  let progress = 1;
+  
+ const [paymentMethod, setPaymentMethod] = useState("Card");
+const [showPaymentPanel, setShowPaymentPanel] = useState(false);
 
-  if (
-    order.status === "Preparing" ||
-    order.status === "Delayed"
-  ) {
-    progress = 2;
-  }
+const isPreparing =
+  order.status === "Preparing" ||
+  order.status === "Delayed" ||
+  order.status === "Served";
 
-  if (order.status === "Served") {
-    progress = 3;
-  }
+const isPaid = order.paid;
 
-  if (order.paid) {
-    progress = 4;
-  }
+const isServed =
+  order.status === "Served";
+
+const isCompleted =
+  isPaid && isServed;
+
+const displayStatus = isCompleted
+  ? "Completed"
+  : order.status;
 
   return (
-    <article className="order-card">
-      <div className="order-heading">
+    <article className="customer-order-card">
+
+      {/* TOP SECTION */}
+      <div className="customer-order-top">
         <div>
+          <span className="order-eyebrow">
+            CHOWLY ORDER
+          </span>
+
           <h3>Order #{order.id}</h3>
 
-          <p>
+          <p className="order-date">
             {new Date(
               order.created_at
             ).toLocaleString()}
@@ -925,134 +1097,438 @@ function CustomerOrder({
         </div>
 
         <span
-          className={`status ${order.status}`}
+          className={`order-status-pill ${displayStatus.toLowerCase()}`}
         >
-          {order.paid
-            ? "Paid"
-            : order.status}
+          {displayStatus}
         </span>
       </div>
 
-      <div className="progress">
-        {[
-          "Placed",
-          "Preparing",
-          "Served",
-          "Paid",
-        ].map((step, index) => (
-          <div
-            key={step}
-            className={
-              index + 1 <= progress
-                ? "step done"
-                : "step"
-            }
-          >
-            <span />
-            {step}
+
+      {/* PROGRESS */}
+      <div className="order-progress-box">
+        <div className="order-progress-line">
+          
+{[
+  {
+    label: "Placed",
+    done: true,
+  },
+  {
+    label: "Preparing",
+    done: isPreparing,
+  },
+  {
+    label: "Served",
+    done: isServed,
+  },
+  {
+    label: "Paid",
+    done: isPaid,
+  },
+].map((step, index) => (
+  <div
+    key={step.label}
+    className={
+      step.done
+        ? "order-progress-step complete"
+        : "order-progress-step"
+    }
+  >
+    <div className="progress-circle">
+      {step.done ? "✓" : index + 1}
+    </div>
+
+    <span>{step.label}</span>
+  </div>
+))}
+        </div>
+      </div>
+
+
+      {/* ITEMS */}
+      <div className="order-section">
+        <div className="order-section-heading">
+          <div>
+            <span className="section-icon">
+              🍽
+            </span>
+
+            <div>
+              <small>YOUR ORDER</small>
+              <h4>What you ordered</h4>
+            </div>
           </div>
-        ))}
+        </div>
+
+        <div className="ordered-items-list">
+          {order.items.map((item) => (
+            <div
+              className="ordered-item-chip"
+              key={`${item.name}-${item.quantity}`}
+            >
+              <span>{item.name}</span>
+              <strong>× {item.quantity}</strong>
+            </div>
+          ))}
+        </div>
       </div>
 
-      <div className="order-details">
-        <p>
-          <b>Items:</b>{" "}
-          {order.items
-            .map(
-              (item) =>
-                `${item.name} × ${item.quantity}`
-            )
-            .join(", ")}
-        </p>
 
-        <p>
-          <b>Estimated wait:</b>{" "}
-          {order.wait_time_mins} minutes
-        </p>
+      {/* DETAILS GRID */}
+      <div className="order-info-grid">
 
-        <p>
-          <b>Waiter:</b>{" "}
-          {order.waiter_name || "Pending"}
-        </p>
+        <div className="order-info-box">
+          <span className="info-icon">⏱</span>
+          <small>ESTIMATED WAIT</small>
+          <strong>
+            {order.wait_time_mins} minutes
+          </strong>
+        </div>
 
-        <p>
-          <b>Chef:</b>{" "}
-          {order.chef_name || "Not recorded"}
-        </p>
+        <div className="order-info-box">
+          <span className="info-icon">👤</span>
+          <small>WAITER</small>
+          <strong>
+            {order.waiter_name || "Pending"}
+          </strong>
+        </div>
 
-        <p>
-          <b>Bartender:</b>{" "}
-          {order.bartender_name ||
-            "Not recorded"}
-        </p>
+        <div className="order-info-box">
+          <span className="info-icon">👨‍🍳</span>
+          <small>CHEF</small>
+          <strong>
+            {order.chef_name ||
+              "Not recorded"}
+          </strong>
+        </div>
 
-        <p>
-          <b>Special request:</b>{" "}
-          {order.special_request || "None"}
-        </p>
+        <div className="order-info-box">
+          <span className="info-icon">🍹</span>
+          <small>BARTENDER</small>
+          <strong>
+            {order.bartender_name ||
+              "Not recorded"}
+          </strong>
+        </div>
+
       </div>
 
+
+      {/* SPECIAL REQUEST */}
+      <div className="special-request-box">
+        <span>📝</span>
+
+        <div>
+          <small>SPECIAL REQUEST</small>
+
+          <p>
+            {order.special_request ||
+              "No special request"}
+          </p>
+        </div>
+      </div>
+
+
+      {/* COMPLAINT */}
       {order.complaints?.length > 0 && (
-        <div className="order-note">
-          <b>Complaint:</b>{" "}
-          {order.complaints[0].description}
+        <div className="feedback-card complaint-card">
+          <div className="feedback-icon">
+            !
+          </div>
+
+          <div>
+            <small>COMPLAINT SUBMITTED</small>
+
+            <p>
+              {
+                order.complaints[0]
+                  .description
+              }
+            </p>
+          </div>
         </div>
       )}
 
+
+      {/* RATING */}
       {order.ratings?.length > 0 && (
-        <div className="order-note">
-          <b>Rating:</b>{" "}
-          {"★".repeat(
-            order.ratings[0].score
-          )}
-          {"☆".repeat(
-            5 - order.ratings[0].score
-          )}
-          {order.ratings[0].comment &&
-            ` — ${order.ratings[0].comment}`}
+        <div className="feedback-card rating-card">
+          <div className="feedback-icon">
+            ★
+          </div>
+
+          <div>
+            <small>YOUR RATING</small>
+
+            <div className="rating-stars">
+              {"★".repeat(
+                order.ratings[0].score
+              )}
+              <span>
+                {"★".repeat(
+                  5 -
+                    order.ratings[0]
+                      .score
+                )}
+              </span>
+            </div>
+
+            {order.ratings[0].comment && (
+              <p>
+                {
+                  order.ratings[0]
+                    .comment
+                }
+              </p>
+            )}
+          </div>
         </div>
       )}
 
-      <div className="order-buttons">
-        {order.complaints?.length ===
-          0 && (
-          <button
-            onClick={() =>
-              submitComplaint(order.id)
-            }
-          >
-            Complaint
-          </button>
-        )}
 
-        {order.ratings?.length === 0 && (
-          <button
-            onClick={() =>
-              submitRating(order.id)
-            }
-          >
-            Rate Order
-          </button>
-        )}
+      {/* ACTIONS */}
+      <div className="customer-order-actions">
 
-        {!order.paid && (
-          <button
-            className="pay"
-            onClick={() =>
-              payForOrder(order.id)
-            }
+  {order.status === "Delayed" &&
+    order.complaints?.length === 0 && (
+      <button
+        className="secondary-order-btn"
+        onClick={() =>
+          submitComplaint(order.id)
+        }
+      >
+        Report an issue
+      </button>
+    )}
+
+  {order.status === "Delayed" &&
+    order.ratings?.length === 0 && (
+      <button
+        className="secondary-order-btn"
+        onClick={() =>
+          submitRating(order.id)
+        }
+      >
+        ★ Rate order
+      </button>
+    )}
+
+  {order.status === "Served" &&
+  !order.paid && (
+    <div className="checkout-area">
+
+      <div className="payment-selector">
+        <label>
+          <span>PAYMENT METHOD</span>
+
+          <select
+            value={paymentMethod}
+            onChange={(event) => {
+              setPaymentMethod(event.target.value);
+              setShowPaymentPanel(false);
+            }}
           >
-            Payment
-          </button>
-        )}
+            <option value="Card">
+              💳 Card
+            </option>
+
+            <option value="Bank Transfer">
+              🏦 Bank Transfer
+            </option>
+
+            <option value="USSD">
+              📱 USSD
+            </option>
+          </select>
+        </label>
+
+        <button
+          className="primary-order-btn"
+          onClick={() =>
+            setShowPaymentPanel(true)
+          }
+        >
+          Continue to Payment
+        </button>
       </div>
 
-      {order.payment && (
-        <div className="payment-record">
-          ✓ Payment recorded —{" "}
-          {money(order.payment.amount)}
+      {showPaymentPanel && (
+        <div className="demo-payment-panel">
+
+          <div className="demo-payment-heading">
+            <div>
+              <small>DEMO PAYMENT</small>
+              <h4>{paymentMethod}</h4>
+            </div>
+
+            <button
+              className="close-payment"
+              onClick={() =>
+                setShowPaymentPanel(false)
+              }
+            >
+              ×
+            </button>
+          </div>
+
+          <div className="demo-warning">
+            Demo only — no real money will be charged.
+          </div>
+
+          {paymentMethod === "Card" && (
+            <div className="card-payment-form">
+
+              <label>
+                Cardholder Name
+                <input
+                  type="text"
+                  placeholder="Demo Customer"
+                />
+              </label>
+
+              <label>
+                Card Number
+                <input
+                  type="text"
+                  placeholder="1234 5678 9012 3456"
+                />
+              </label>
+
+              <div className="card-small-fields">
+                <label>
+                  Expiry
+                  <input
+                    type="text"
+                    placeholder="12/30"
+                  />
+                </label>
+
+                <label>
+                  CVV
+                  <input
+                    type="text"
+                    placeholder="123"
+                  />
+                </label>
+              </div>
+
+              <button
+                className="complete-demo-payment"
+                onClick={() => {
+                  payForOrder(
+                    order.id,
+                    paymentMethod
+                  );
+                  setShowPaymentPanel(false);
+                }}
+              >
+                Pay with Demo Card
+              </button>
+            </div>
+          )}
+
+          {paymentMethod === "Bank Transfer" && (
+            <div className="transfer-details">
+
+              <p>
+                Transfer to the following demo account:
+              </p>
+
+              <div className="bank-detail">
+                <span>BANK</span>
+                <strong>Chowly Demo Bank</strong>
+              </div>
+
+              <div className="bank-detail">
+                <span>ACCOUNT NAME</span>
+                <strong>
+                  Bamboo Lounge / Chowly
+                </strong>
+              </div>
+
+              <div className="bank-detail">
+                <span>ACCOUNT NUMBER</span>
+                <strong>0123456789</strong>
+              </div>
+
+              <p className="demo-bank-note">
+                Fictional account details for demonstration only.
+              </p>
+
+              <button
+                className="complete-demo-payment"
+                onClick={() => {
+                  payForOrder(
+                    order.id,
+                    paymentMethod
+                  );
+                  setShowPaymentPanel(false);
+                }}
+              >
+                I Have Made the Demo Transfer
+              </button>
+            </div>
+          )}
+
+          {paymentMethod === "USSD" && (
+            <div className="ussd-details">
+
+              <p>
+                Use the demo USSD code below:
+              </p>
+
+              <div className="ussd-code">
+                *000*1234#
+              </div>
+
+              <p>
+                This is a fictional demonstration code. Do not dial it.
+              </p>
+
+              <button
+                className="complete-demo-payment"
+                onClick={() => {
+                  payForOrder(
+                    order.id,
+                    paymentMethod
+                  );
+                  setShowPaymentPanel(false);
+                }}
+              >
+                I Have Completed the Demo USSD Payment
+              </button>
+            </div>
+          )}
+
         </div>
       )}
+
+    </div>
+  )}
+
+</div>
+
+{order.paid &&
+  order.payment?.amount && (
+    <div className="payment-success-box">
+      <div className="payment-check">
+        ✓
+      </div>
+
+      <div>
+        <small>PAYMENT COMPLETED</small>
+
+        <strong>
+          {money(order.payment.amount)}
+        </strong>
+
+        <p>
+          Your payment has been recorded successfully.
+        </p>
+      </div>
+    </div>
+  )}
+
     </article>
   );
 }
@@ -1062,141 +1538,293 @@ function WaiterOrder({
   staff,
   updateOrder,
 }) {
+const isCompleted =
+  order.paid &&
+  order.status === "Served";
+
+const displayStatus = order.status;
+
   return (
-    <article className="order-card">
-      <div className="order-heading">
+    <article className="waiter-order-card">
+
+      {/* HEADER */}
+      <div className="waiter-order-header">
         <div>
+          <span className="waiter-eyebrow">
+  TABLE 7 • {order.paid ? "COMPLETED ORDER" : "ACTIVE ORDER"}
+</span>
+
           <h3>
-            Order #{order.id} •{" "}
-            {order.customer_name}
+            Order #{order.id}
           </h3>
 
-          <p>
-            {order.items
-              .map(
-                (item) =>
-                  `${item.name} × ${item.quantity}`
-              )
-              .join(", ")}
+          <p className="waiter-customer">
+            👤 {order.customer_name}
           </p>
         </div>
 
         <span
-          className={`status ${order.status}`}
+          className={`waiter-status ${displayStatus.toLowerCase()}`}
         >
-          {order.status}
+          {displayStatus}
         </span>
       </div>
 
-      <div className="staff-controls">
-        <label>
-          Chef
-          <select
-            value=""
-            onChange={(event) =>
-              updateOrder(
-                order.id,
-                "chef",
-                event.target.value
-              )
-            }
-          >
-            <option value="">
-              {order.chef_name ||
-                "Select chef"}
-            </option>
 
-            {staff.chefs.map((chef) => (
-              <option
-                value={chef.id}
-                key={chef.id}
-              >
-                {chef.name}
+      {/* ORDER ITEMS */}
+      <div className="waiter-order-section">
+        <div className="waiter-section-title">
+          <span>🍽️</span>
+
+          <div>
+            <small>ORDER ITEMS</small>
+            <h4>Customer's order</h4>
+          </div>
+        </div>
+
+        <div className="waiter-item-list">
+          {order.items.map((item) => (
+            <div
+              className="waiter-item-chip"
+              key={`${item.name}-${item.quantity}`}
+            >
+              <span>{item.name}</span>
+
+              <strong>
+                × {item.quantity}
+              </strong>
+            </div>
+          ))}
+        </div>
+      </div>
+
+
+      {/* QUICK INFORMATION */}
+      <div className="waiter-info-grid">
+
+        <div className="waiter-info-card">
+          <span className="waiter-info-icon">
+            👤
+          </span>
+
+          <small>ASSIGNED WAITER</small>
+
+          <strong>
+            {order.waiter_name ||
+              "Not assigned"}
+          </strong>
+        </div>
+
+        <div className="waiter-info-card">
+          <span className="waiter-info-icon">
+            ⏱️
+          </span>
+
+          <small>ESTIMATED WAIT</small>
+
+          <strong>
+            {order.wait_time_mins} minutes
+          </strong>
+        </div>
+
+        <div className="waiter-info-card">
+          <span className="waiter-info-icon">
+            📝
+          </span>
+
+          <small>SPECIAL REQUEST</small>
+
+          <strong>
+            {order.special_request ||
+              "None"}
+          </strong>
+        </div>
+
+      </div>
+
+
+      {/* ASSIGNMENT CONTROLS */}
+      <div className="waiter-controls-panel">
+
+        <div className="waiter-controls-heading">
+          <div>
+            <span>👨‍🍳</span>
+
+            <div>
+              <small>
+                ORDER FULFILMENT
+              </small>
+
+              <h4>
+                Assign staff & update status
+              </h4>
+            </div>
+          </div>
+
+          {order.paid && (
+            <span className="completed-label">
+              Completed
+            </span>
+          )}
+        </div>
+
+
+        <div className="waiter-control-grid">
+
+          <label className="waiter-control">
+            <span>Chef</span>
+
+            <select
+              disabled={isCompleted}
+              value=""
+              onChange={(event) =>
+                updateOrder(
+                  order.id,
+                  "chef",
+                  event.target.value
+                )
+              }
+            >
+              <option value="">
+                {order.chef_name ||
+                  "Select chef"}
               </option>
-            ))}
-          </select>
-        </label>
 
-        <label>
-          Bartender
-          <select
-            value=""
-            onChange={(event) =>
-              updateOrder(
-                order.id,
-                "bartender",
-                event.target.value
-              )
-            }
-          >
-            <option value="">
-              {order.bartender_name ||
-                "Select bartender"}
-            </option>
-
-            {staff.bartenders.map(
-              (bartender) => (
+              {staff.chefs.map((chef) => (
                 <option
-                  value={bartender.id}
-                  key={bartender.id}
+                  value={chef.id}
+                  key={chef.id}
                 >
-                  {bartender.name}
+                  {chef.name}
                 </option>
-              )
-            )}
-          </select>
-        </label>
+              ))}
+            </select>
+          </label>
 
-        <label>
-          Status
-          <select
-            value={order.status}
-            onChange={(event) =>
-              updateOrder(
-                order.id,
-                "status",
-                event.target.value
-              )
-            }
-          >
-            <option>Pending</option>
-            <option>Preparing</option>
-            <option>Delayed</option>
-            <option>Served</option>
-          </select>
-        </label>
+
+          <label className="waiter-control">
+            <span>Bartender</span>
+
+            <select
+              disabled={isCompleted}
+              value=""
+              onChange={(event) =>
+                updateOrder(
+                  order.id,
+                  "bartender",
+                  event.target.value
+                )
+              }
+            >
+              <option value="">
+                {order.bartender_name ||
+                  "Select bartender"}
+              </option>
+
+              {staff.bartenders.map(
+                (bartender) => (
+                  <option
+                    value={bartender.id}
+                    key={bartender.id}
+                  >
+                    {bartender.name}
+                  </option>
+                )
+              )}
+            </select>
+          </label>
+
+
+          <label className="waiter-control">
+            <span>Status</span>
+
+            <select
+              disabled={isCompleted}
+              value={displayStatus}
+              onChange={(event) =>
+                updateOrder(
+                  order.id,
+                  "status",
+                  event.target.value
+                )
+              }
+            >
+              <option>Pending</option>
+              <option>Preparing</option>
+              <option>Delayed</option>
+              <option>Served</option>
+
+              {order.paid && (
+                <option>Paid</option>
+              )}
+            </select>
+          </label>
+
+        </div>
       </div>
 
-      <div className="order-details">
-        <p>
-          <b>Waiter:</b>{" "}
-          {order.waiter_name}
-        </p>
 
-        <p>
-          <b>Estimated wait:</b>{" "}
-          {order.wait_time_mins} minutes
-        </p>
-
-        <p>
-          <b>Special request:</b>{" "}
-          {order.special_request || "None"}
-        </p>
-      </div>
-
+      {/* COMPLAINT */}
       {order.complaints?.length > 0 && (
-        <div className="order-note">
-          <b>Customer complaint:</b>{" "}
-          {order.complaints[0].description}
+        <div className="waiter-feedback complaint">
+          <div className="waiter-feedback-icon">
+            !
+          </div>
+
+          <div>
+            <small>
+              CUSTOMER COMPLAINT
+            </small>
+
+            <p>
+              {
+                order.complaints[0]
+                  .description
+              }
+            </p>
+          </div>
         </div>
       )}
 
+
+      {/* RATING */}
       {order.ratings?.length > 0 && (
-        <div className="order-note">
-          <b>Customer rating:</b>{" "}
-          {order.ratings[0].score}/5
+        <div className="waiter-feedback rating">
+          <div className="waiter-feedback-icon">
+            ★
+          </div>
+
+          <div>
+            <small>
+              CUSTOMER RATING
+            </small>
+
+            <div className="waiter-rating-stars">
+              {"★".repeat(
+                order.ratings[0].score
+              )}
+
+              <span>
+                {"★".repeat(
+                  5 -
+                    order.ratings[0]
+                      .score
+                )}
+              </span>
+            </div>
+
+            {order.ratings[0].comment && (
+              <p>
+                {
+                  order.ratings[0]
+                    .comment
+                }
+              </p>
+            )}
+          </div>
         </div>
       )}
+
     </article>
   );
 }
@@ -1229,10 +1857,53 @@ function Footer() {
 
         <div>
           <h4>MENU</h4>
-          <span>Mains</span>
-          <span>Grills & Suya</span>
-          <span>Drinks</span>
-          <span>Local Favourites</span>
+          <button
+  className="footer-link"
+  onClick={() => {
+    setPage("menu");
+    setFilter("Food");
+    setSearch("");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }}
+>
+  Mains
+</button>
+
+<button
+  className="footer-link"
+  onClick={() => {
+    setPage("menu");
+    setFilter("All");
+    setSearch("suya");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }}
+>
+  Grills & Suya
+</button>
+
+<button
+  className="footer-link"
+  onClick={() => {
+    setPage("menu");
+    setFilter("Drink");
+    setSearch("");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }}
+>
+  Drinks
+</button>
+
+<button
+  className="footer-link"
+  onClick={() => {
+    setPage("menu");
+    setFilter("All");
+    setSearch("");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }}
+>
+  Local Favourites
+</button>
         </div>
 
         <div>
